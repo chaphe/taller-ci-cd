@@ -1,12 +1,12 @@
-# Taller Guiado: Introducción a CI/CD con GitHub Actions
+# Práctica Guiada: Introducción a CI/CD con GitHub Actions y Jest
 
-En esta práctica trabajarás con un flujo real de **Integración Continua (CI)** y **Despliegue Continuo (CD)**. Partirás de una calculadora web funcional cuyo código se prueba automáticamente con **Jest** y se publica en **GitHub Pages** cada vez que guardas cambios.
+En esta práctica trabajarás con un flujo real de **Integración Continua (CI)** y **Despliegue Continuo (CD)**. Partirás de una calculadora web funcional cuyo código se prueba automáticamente con **Jest** y se publica en **GitHub Pages** cada vez que guardas cambios en tu rama principal.
 
 ---
 
 ## Parte 1: Preparar tu entorno (Fork y permisos)
 
-Por razones de seguridad, GitHub desactiva las automatizaciones cuando copias un repositorio ajeno. Sigue estos pasos en orden para activarlas en tu cuenta:
+Por razones de seguridad, GitHub desactiva las automatizaciones cuando copias un repositorio ajeno. Sigue estos tres pasos en orden para activarlas en tu cuenta:
 
 1. **Haz un Fork:** En la esquina superior derecha de este repositorio, haz clic en **Fork** > **Create fork** para crear una copia bajo tu propio usuario de GitHub.
 2. **Activa GitHub Actions:**
@@ -27,17 +27,18 @@ Antes de programar, dispara una ejecución para comprobar que la infraestructura
 3. Haz clic en **Commit changes** directamente sobre la rama `main`.
 4. Ve a la pestaña **Actions**, entra a la ejecución en curso y observa cómo se completan las dos fases:
    * **`pruebas-unitarias` (CI):** Instala Node.js, descarga Jest y valida las funciones `sumar` y `multiplicar`.
-   * **`despliegue-web` (CD):** Publica tu página en internet. Al terminar, haz clic en el enlace generado (`https://tu-usuario.github.io/...`) para ver tu web en vivo.
+   * **`despliegue-web` (CD):** Publica tu página en internet.
+5. **Abre tu página en vivo:** Cuando ambos bloques estén en verde, haz clic en el enlace azul que aparece justo debajo de la caja **`despliegue-web`** (también puedes encontrarlo en **Settings > Pages** o en la barra lateral derecha bajo **Deployments > github-pages**).
 
 ---
 
 ## Parte 3: El Reto — Extender la aplicación y el Pipeline
 
-Tu misión es agregar la operación **Dividir** cubriendo las tres capas de un ciclo CI/CD profesional:
+Tu misión es agregar la operación **Dividir** cubriendo las tres capas de un ciclo CI/CD profesional. Puedes guiarte por los comentarios `TODO (Estudiante)` dentro de cada archivo:
 
 ### 1. Extender el código (`calculadora.js` e `index.html`)
 * En **`calculadora.js`**:
-  * Crea la función `dividir(a, b)`. Si `b === 0`, la función debe devolver el texto `"Error: división por cero"`. En cualquier otro caso, debe devolver `a / b`.
+  * Crea la función `dividir(a, b)`. Si `b === 0`, la función debe devolver exactamente el texto `"Error: división por cero"`. En cualquier otro caso, debe devolver `a / b`.
   * Exporta la nueva función al final del archivo: `module.exports = { sumar, multiplicar, dividir };`.
 * En **`index.html`**:
   * Agrega un nuevo botón: `<button onclick="calcular('dividir')">Dividir (÷)</button>`.
@@ -50,10 +51,17 @@ Tu misión es agregar la operación **Dividir** cubriendo las tres capas de un c
   * Otro que verifique que `dividir(10, 0)` devuelve `"Error: división por cero"`.
 
 ### 3. Extender el Pipeline (`.github/workflows/practica.yml`)
-* En la sección `on:`, agrega el evento `pull_request` apuntando a la rama `main` (para que las pruebas también se ejecuten si alguien propone cambios mediante un Pull Request):
-  ```yaml
-  on:
-    push:
-      branches: [ "main" ]
-    pull_request:
-      branches: [ "main" ]
+* En el job `pruebas-unitarias`, agrega un quinto paso al final (`- name: 5. Confirmar estado`) que ejecute el comando `echo "Pruebas completadas exitosamente"`.
+
+---
+
+## Parte 4: Verificación y Entrega
+
+1. Guarda todos tus cambios en la rama `main` de tu fork.
+2. Verifica en tu pestaña **Actions** que ambos bloques (`pruebas-unitarias` y `despliegue-web`) terminen en verde ✅. *(Tip: si fallan, haz clic en el paso rojo para leer qué prueba de Jest no pasó).*
+3. Entra a la URL pública de tu GitHub Pages y comprueba que el botón **Dividir (÷)** funciona tanto con números normales como al dividir entre `0`. Copia esa URL.
+4. **Entrega mediante Pull Request:**
+   * Ve a la pestaña **Pull requests** de tu fork y haz clic en **New pull request** hacia el repositorio original del profesor.
+   * Pon tu nombre completo en el título del Pull Request.
+   * **Pega el enlace de tu GitHub Pages en la descripción** del Pull Request para que el profesor pueda probar tu calculadora en vivo.
+   * Haz clic en **Create pull request**.
